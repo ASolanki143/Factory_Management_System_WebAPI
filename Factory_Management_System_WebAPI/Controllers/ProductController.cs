@@ -101,7 +101,7 @@ namespace Factory_Management_System_WebAPI.Controllers
         #endregion
 
         #region Update Product 
-        [HttpPatch("update/{ProductID}")]
+        [HttpPut("update/{ProductID}")]
         public IActionResult UpdateProduct(int ProductID, ProductModel product)
         {
             ApiResponse response = null;
