@@ -208,6 +208,30 @@ namespace Factory_Management_System_WebAPI.Controllers
         }
         #endregion
 
+        #region Update Customer
+        [HttpPut("{CustomerID}")]
+        public IActionResult Update(CustomerModel customer,int CustomerID)
+        {
+            ApiResponse response = null;
+            if (customer == null)
+            {
+                response = new ApiResponse("Customer Details are required", 400);
+                return BadRequest(response);
+            }
+
+            bool isInserted = _customerRepository.Update(customer);
+
+            if (!isInserted)
+            {
+                response = new ApiResponse("Error while updating customer detail", 500);
+                return BadRequest();
+            }
+
+            response = new ApiResponse("Customer Detail Update Succesfully", 200);
+            return Ok(response);
+        }
+        #endregion
+
         #region Delete Customer
         [HttpPost("delete/{CustomerID}")]
         public IActionResult Delete(int CustomerID)

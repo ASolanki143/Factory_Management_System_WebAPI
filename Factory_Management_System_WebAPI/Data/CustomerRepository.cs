@@ -215,6 +215,38 @@ namespace Factory_Management_System_WebAPI.Data
         }
         #endregion
 
+        #region Update
+        public bool Update(CustomerModel customer)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("PR_Customer_Update", conn)
+                {
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@CustomerID", customer.CustomerID);
+                cmd.Parameters.AddWithValue("@Password", customer.Password);
+                cmd.Parameters.AddWithValue("@CustomerName", customer.CustomerName);
+                cmd.Parameters.AddWithValue("@Address", customer.Address);
+                cmd.Parameters.AddWithValue("@Email", customer.Email);
+                cmd.Parameters.AddWithValue("@MobileNo", customer.MobileNo);
+                cmd.Parameters.AddWithValue("@AccountNo", customer.AccountNo);
+                cmd.Parameters.AddWithValue("@BankName", customer.BankName);
+                cmd.Parameters.AddWithValue("@IFSCCode", customer.IFSCCode);
+                cmd.Parameters.AddWithValue("@CompanyName", customer.CompanyName);
+                cmd.Parameters.AddWithValue("@GSTNo", customer.GSTNo);
+                cmd.Parameters.AddWithValue("@CompanyNo", customer.CompanyNo);
+                cmd.Parameters.AddWithValue("@CompanyEmail", customer.CompanyEmail);
+                cmd.Parameters.AddWithValue("@AdminID", customer.AdminID);
+                conn.Open();
+
+                int rowAffected = cmd.ExecuteNonQuery();
+                return rowAffected > 0;
+            }
+        }
+        #endregion
+
         #region Delete
         public bool Delete(int CustomerID)
         {
