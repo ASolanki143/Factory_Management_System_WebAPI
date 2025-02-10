@@ -9,4 +9,10 @@
         public bool? IsActive { get; set; }
         public int? AdminID { get; set; }
     }
+
+    public class ProductDropDownModel
+    {
+        public int? ProductID { get; set; }
+        public string? ProductName { get; set; }
+    }
 }

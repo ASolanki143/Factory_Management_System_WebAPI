@@ -18,10 +18,10 @@ namespace Factory_Management_System_WebAPI.Controllers
 
         #region Get All Product
         [HttpGet]
-        public IActionResult GetAllProducts(int AdminID)
+        public IActionResult GetAllProducts(int AdminID, double? MaxPrice, double? MinPrice, string? ProductName)
         {
             ApiResponse response = null;
-            var products = _productRepository.SelectAll(AdminID);
+            var products = _productRepository.SelectAll(AdminID,MaxPrice,MinPrice,ProductName);
             if(products == null)
             {
                 response = new ApiResponse("Products not found", 404);
@@ -155,5 +155,22 @@ namespace Factory_Management_System_WebAPI.Controllers
             return Ok(response);
         }
         #endregion
+
+        #region Get Product DropDown
+        [HttpGet("dropdown/{OrderID}")]
+        public IActionResult ProductDropDown(int OrderID)
+        {
+            ApiResponse response = null;
+            var products = _productRepository.ProductDropDown(OrderID);
+            if(products == null)
+            {
+                response = new ApiResponse("Products not found", 404);
+                return NotFound(response);
+            }
+            response = new ApiResponse(products, "Products retrived successfully", 200);
+            return Ok(response);
+        }
+        #endregion
+
     }
 }

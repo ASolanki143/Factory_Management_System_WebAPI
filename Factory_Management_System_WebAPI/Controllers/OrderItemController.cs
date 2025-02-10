@@ -75,16 +75,17 @@ namespace Factory_Management_System_WebAPI.Controllers
 
         #region Insert
         [HttpPost]
-        public IActionResult InsertOrderItem(int ProductID,int Quantity,int AdminID)
+        public IActionResult InsertOrderItem(OrderItemAddModel orderItemModel)
         {
             ApiResponse response = null;
-            if(ProductID == null || Quantity == 0 || Quantity == null)
+            Console.WriteLine("Insert OrderItem");
+            if(orderItemModel.ProductID == null || orderItemModel.Quantity == 0 || orderItemModel.Quantity == null)
             {
                 response = new ApiResponse("All Feild is required", 400);
                 return BadRequest(response);
             }
 
-            int OrderItemID = _orderItemRepository.Insert(ProductID, Quantity, AdminID);
+            int OrderItemID = _orderItemRepository.Insert(orderItemModel);
             if (OrderItemID <= 0)
             {
                 response = new ApiResponse("Error occur while inserting order item", 500);
@@ -165,6 +166,29 @@ namespace Factory_Management_System_WebAPI.Controllers
 
             bool isDeleted = _orderItemRepository.Delete(OrderItemID);
             if(!isDeleted)
+            {
+                response = new ApiResponse("Error occur while deleting OrderItem", 500);
+                return BadRequest(response);
+            }
+
+            response = new ApiResponse("Order Item Deleted Successfully", 200);
+            return Ok(response);
+        }
+        #endregion
+
+        #region Delete OrderItem By OrderID
+        [HttpDelete("order/{OrderID}")]
+        public IActionResult DeleteOrderItemByOrderID(int OrderID)
+        {
+            ApiResponse response = null;
+            if (OrderID == null || OrderID <= 0)
+            {
+                response = new ApiResponse("OrderID is required", 400);
+                return BadRequest(response);
+            }
+
+            bool isDeleted = _orderItemRepository.DeleteByOrderID(OrderID);
+            if (!isDeleted)
             {
                 response = new ApiResponse("Error occur while deleting OrderItem", 500);
                 return BadRequest(response);

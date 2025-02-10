@@ -19,10 +19,10 @@ namespace Factory_Management_System_WebAPI.Controllers
         #region Get All Customer
 
         [HttpGet]
-        public IActionResult GetAllCustomers(int AdminID)
+        public IActionResult GetAllCustomers(int AdminID, string? CustomerName, string? CompanyName)
         {
             ApiResponse response = null;
-            var customers = _customerRepository.SelectAll(AdminID);
+            var customers = _customerRepository.SelectAll(AdminID,CustomerName,CompanyName);
             if (customers == null)
             {
                 response = new ApiResponse("Customers not found", 404);

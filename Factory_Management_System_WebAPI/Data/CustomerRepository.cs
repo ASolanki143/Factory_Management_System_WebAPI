@@ -13,7 +13,7 @@ namespace Factory_Management_System_WebAPI.Data
         }
 
         #region Select All
-        public IEnumerable<CustomerModel> SelectAll(int AdminID)
+        public IEnumerable<CustomerModel> SelectAll(int AdminID, string? CustomerName, string? CompanyName)
         {
             var customers = new List<CustomerModel>();
             using(SqlConnection conn = new SqlConnection(_connectionString))
@@ -23,6 +23,13 @@ namespace Factory_Management_System_WebAPI.Data
                     CommandType = System.Data.CommandType.StoredProcedure
                 };
 
+                Console.WriteLine("AdminID: "+AdminID);
+                Console.WriteLine("CustomerName: "+CustomerName);
+                Console.WriteLine("CompanyName: "+CompanyName);
+
+
+                cmd.Parameters.AddWithValue("@CustomerName",CustomerName);
+                cmd.Parameters.AddWithValue("@CompanyName", CompanyName);
                 cmd.Parameters.AddWithValue("@AdminID", AdminID);
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();

@@ -14,7 +14,7 @@ namespace Factory_Management_System_WebAPI.Data
         }
 
         #region Select All Product
-        public IEnumerable<ProductModel> SelectAll(int AdminID)
+        public IEnumerable<ProductModel> SelectAll(int AdminID, double? MaxPrice, double? MinPrice , string? ProductName)
         {
             var products = new List<ProductModel>();
             using (SqlConnection conn = new SqlConnection(_connectionString))
@@ -24,6 +24,9 @@ namespace Factory_Management_System_WebAPI.Data
                     CommandType = System.Data.CommandType.StoredProcedure
                 };
 
+                cmd.Parameters.AddWithValue("@MaxPrice", MaxPrice);
+                cmd.Parameters.AddWithValue("@MinPrice", MinPrice);
+                cmd.Parameters.AddWithValue("@ProductName", ProductName);
                 cmd.Parameters.AddWithValue("@AdminID",AdminID);
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -154,6 +157,33 @@ namespace Factory_Management_System_WebAPI.Data
                 int rowAffected = cmd.ExecuteNonQuery();
                 return rowAffected > 0;
             }
+        }
+        #endregion
+
+        #region Product DropDown
+        public IEnumerable<ProductDropDownModel> ProductDropDown(int OrderID)
+        {
+            var products = new List<ProductDropDownModel>();
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("PR_Product_DropDown", conn)
+                {
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@OrderID", OrderID);
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    products.Add(new ProductDropDownModel()
+                    {
+                        ProductID = Convert.ToInt32(reader["ProductID"]),
+                        ProductName = reader["ProductName"].ToString()
+                    });
+                }
+            }
+            return products;
         }
         #endregion
     }

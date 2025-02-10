@@ -115,7 +115,7 @@ namespace Factory_Management_System_WebAPI.Data
         #endregion
 
         #region Insert
-        public int Insert(int ProductID, int Quantity, int AdminID)
+        public int Insert(OrderItemAddModel orderItemModel)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
@@ -124,9 +124,12 @@ namespace Factory_Management_System_WebAPI.Data
                     CommandType = System.Data.CommandType.StoredProcedure
                 };
 
-                cmd.Parameters.AddWithValue("@AdminID", AdminID);
-                cmd.Parameters.AddWithValue("@ProductID", ProductID);
-                cmd.Parameters.AddWithValue("@Quantity", Quantity);
+                Console.WriteLine(orderItemModel.AdminID);
+
+                cmd.Parameters.AddWithValue("@AdminID", orderItemModel.AdminID);
+                cmd.Parameters.AddWithValue("@ProductID", orderItemModel.ProductID);
+                cmd.Parameters.AddWithValue("@Quantity", orderItemModel.Quantity);
+                cmd.Parameters.AddWithValue("@OrderID", orderItemModel.OrderID);   
                 SqlParameter outputParam = new SqlParameter
                 {
                     ParameterName = "@OrderItemID",
@@ -199,6 +202,25 @@ namespace Factory_Management_System_WebAPI.Data
                 };
 
                 cmd.Parameters.AddWithValue("@OrderItemID", OrderItemID);
+                conn.Open();
+
+                int rowAffected = cmd.ExecuteNonQuery();
+                return rowAffected > 0;
+            }
+        }
+        #endregion
+
+        #region Delete By OrderID
+        public bool DeleteByOrderID(int OrderID)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("PR_OrderItem_Delete_OrderID", conn)
+                {
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+
+                cmd.Parameters.AddWithValue("@OrderID", OrderID);
                 conn.Open();
 
                 int rowAffected = cmd.ExecuteNonQuery();

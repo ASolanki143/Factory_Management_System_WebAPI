@@ -12,4 +12,13 @@
         public string? Material { get; set; }
         public int? AdminID { get; set; }
     }
+
+
+    public class OrderItemAddModel
+    {
+        public int? OrderID { get; set; }
+        public int? ProductID { get; set; }
+        public int? Quantity { get; set; }
+        public int? AdminID { get; set; }
+    }
 }
