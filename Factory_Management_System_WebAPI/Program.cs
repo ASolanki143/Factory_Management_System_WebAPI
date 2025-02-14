@@ -1,6 +1,27 @@
 using Factory_Management_System_WebAPI.Data;
+using Factory_Management_System_WebAPI.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"], // Specify the Issuer
+            ValidAudience = builder.Configuration["Jwt:Audience"], // Specify the Audience
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])) // Secret key
+        };
+    });
+
+builder.Services.AddSingleton<JwtTokenGenerator>();
 
 // Add services to the container.
 
@@ -14,10 +35,7 @@ builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<OrderItemRepository>();
 builder.Services.AddScoped<BillRepository>();
-
-
-
-
+builder.Services.AddScoped<AuthRepository>();
 
 var app = builder.Build();
 
@@ -30,7 +48,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseMiddleware<JwtMiddleware>();
+
+app.UseAuthentication();
 
 app.MapControllers();
 
